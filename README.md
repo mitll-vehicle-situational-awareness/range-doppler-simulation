@@ -1,2 +1,8 @@
 # Radar Point Cloud Simulation
-Add later
+
+
+For matlab simulation:
+
+install the following toolboxes:
+- phased array system toolbox
+- automated driving simulation
