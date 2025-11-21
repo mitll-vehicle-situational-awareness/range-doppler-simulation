@@ -12,7 +12,7 @@ FFTRNGSIZE=2^ceil(log2(noADC));       % size for range dimension FFT
 FFTDOPSIZE=2^ceil(log2(noChirps));    % size of doppler velocity FFT
 c=physconst('lightspeed');            % speed of light
 
-Radar_Filename0='\\g105-rtop\murmur\Measurements\20251016_chamber_tests\22sphere_0_Raw_0.bin';    % 
+Radar_Filename0='22sphere_0_Raw_0.bin';    %
 
 [radarFrame0,rAx]=getRadarReturns(Radar_Filename0,noADC,noChirps,noRx,noFrames,slp,fs,FFTRNGSIZE); % returns radar data cube and range axis
 

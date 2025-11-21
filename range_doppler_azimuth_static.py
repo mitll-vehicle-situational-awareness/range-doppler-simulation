@@ -51,14 +51,14 @@ Gr = 10.0
 # Range axis from beat frequency bin mapping:
 # beat freq per range bin = (bin / N) * fs  -> R = c * f_b / (2k)
 f_bins = (np.arange(FFTRNGSIZE) / FFTRNGSIZE) * fs
-rAx = (c * f_bins) / (2.0 * slp)
+rangeAxis = (c * f_bins) / (2.0 * slp)
 
 # Proper slow-time frequency axis (centered at zero after fftshift)
 fAx = np.fft.fftshift(np.fft.fftfreq(FFTDOPSIZE, d=PRI))   # doppler shift in Hz, ranges [-PRF/2, +PRF/2)
-vAx = fAx * (wavelength / 2.0) # v = f * lambda / 2
+velocityAxis = fAx * (wavelength / 2.0) # v = f * lambda / 2
 
-print(f"Range axis: {rAx[0]:.3f} to {rAx[-1]:.3f} m")
-print(f"Velocity axis: {vAx[0]:.6f} to {vAx[-1]:.6f} m/s")
+print(f"Range axis: {rangeAxis[0]:.3f} to {rangeAxis[-1]:.3f} m")
+print(f"Velocity axis: {velocityAxis[0]:.6f} to {velocityAxis[-1]:.6f} m/s")
 
 # ---------- DATA CUBE ----------
 data = np.zeros((noADC, noRx, noChirps, noFrames), dtype=np.complex128)
@@ -121,7 +121,7 @@ fig = plt.figure(figsize=(16,10))
 # 1) Range profile (first chirp)
 ax1 = fig.add_subplot(2,2,1)
 range_profile_db = 20.0 * np.log10(np.abs(range_profiles[:,0]) + 1e-12)
-ax1.plot(rAx, range_profile_db, linewidth=2)
+ax1.plot(rangeAxis, range_profile_db, linewidth=2)
 ax1.set_xlabel("Range (m)")
 ax1.set_ylabel("Power (dB)")
 ax1.set_title("Range Profile (first chirp)")
@@ -131,13 +131,13 @@ ax1.grid(True)
 ax2 = fig.add_subplot(2,2,2)
 # rd shape = (range_bins, dop_bins)
 im = ax2.imshow(RD_dB, aspect='auto', origin='lower',
-               extent=[vAx[0], vAx[-1], rAx[0], rAx[-1]],
+               extent=[velocityAxis[0], velocityAxis[-1], rangeAxis[0], rangeAxis[-1]],
                cmap='jet', vmin=np.max(RD_dB)-60)
 ax2.set_xlabel("Radial velocity (m/s)")
 ax2.set_ylabel("Range (m)")
 ax2.set_title("Range-Doppler")
 plt.colorbar(im, ax=ax2, label='Magnitude (dB)')
-ax2.set_ylim(0, rAx[-1])
+ax2.set_ylim(0, rangeAxis[-1])
 
 # 3) Top-down geometry and wavefronts (correct radii)
 ax3 = fig.add_subplot(2,2,3)
@@ -185,8 +185,8 @@ ax4.grid(True)
 
 # DEBUGGING: find max in RD (range x doppler)
 range_idx, dop_idx = np.unravel_index(np.argmax(RD_dB), RD_dB.shape)
-measured_range = rAx[range_idx]
-measured_velocity = vAx[dop_idx]
+measured_range = rangeAxis[range_idx]
+measured_velocity = velocityAxis[dop_idx]
 
 print(f"Detected peak: range_idx={range_idx}, measured_range={measured_range:.6f} m")
 print(f"Detected peak doppler index={dop_idx}, measured_velocity={measured_velocity:.6f} m/s")
